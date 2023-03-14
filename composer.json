@@ -1,0 +1,24 @@
+{
+  "name": "ytk/kuaishou",
+  "description": "这是一个快手招商的sdk",
+  "require": {
+    "php" : ">=7.4",
+    "ext-json": "*",
+    "ext-curl": "*",
+    "topthink/framework": "5.1.* || 6.*"
+  },
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "wsk"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "ytk\\": "src"
+    },
+    "files": [
+      "src/helper.php"
+    ]
+  }
+}
