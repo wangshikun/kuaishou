@@ -4,8 +4,7 @@
   "require": {
     "php" : ">=7.4",
     "ext-json": "*",
-    "ext-curl": "*",
-    "topthink/framework": "5.1.* || 6.*"
+    "ext-curl": "*"
   },
   "license": "Apache-2.0",
   "authors": [

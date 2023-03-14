@@ -33,7 +33,7 @@ class RefreshTokenRequest
 
     public function getUrlPath()
     {
-        return "/token/refresh";
+        return "/oauth2/refresh_token";
     }
 
     public function getConfig()

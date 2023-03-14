@@ -46,7 +46,7 @@ class CreateTokenRequest
 	 */
     public function getUrlPath(): string
 	{
-        return "/token/create";
+        return "/oauth2/access_token";
     }
 
 	/**
