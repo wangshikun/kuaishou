@@ -1,3 +1,4 @@
 /.idea
 vendor
+/sdk
 composer.lock

@@ -15,17 +15,19 @@
 		public function request($request, $accessToken) {
 			$config = $request->getConfig();
 			$urlPath = $request->getUrlPath();
+			$param=$request->getParam();
 			$method = $this->getMethod($urlPath);
+			$param=$this->getParam($param);
 			$paramJson = SignUtil::marshal($request->getParam());
 			$appKey = $config->appKey;
 			$appSecret = $config->appSecret;
 			$timestamp = time();
-			$sign = SignUtil::sign($appKey, $appSecret, $method, $timestamp, $paramJson);
+			$sign = SignUtil::sign($appKey, $appSecret, $method, $timestamp, $paramJson,$accessToken);
 			$openHost = $config->openRequestUrl;
 			$accessTokenStr =$accessToken;
 			//String requestUrlPattern = "%s/%s?app_key=%s&method=%s&v=2&sign=%s&timestamp=%s&access_token=%s";
-			$requestUrl = $openHost.$urlPath."?"."app_key=".$appKey."&method=".$method."&version=1&sign=".$sign."&timestamp=".$timestamp."&access_token=".$accessTokenStr."&sign_method=hmac-sha256";
-
+			$string1=$openHost.$urlPath."?"."access_token=".$accessTokenStr."&app_key=".$appKey."&method=".$method."&param=";
+			$requestUrl = Str_replace("\"","'",$string1).$param.str_replace("\"","'","&version=1&signMethod=HMAC_SHA256"."&timestamp=".$timestamp."&sign=".$sign);
 			//发送http请求
 			$httpRequest = new HttpRequest();
 			$httpRequest->url = $requestUrl;
@@ -54,6 +56,18 @@
 				$json->message=$json->msg;
 			}
 			return $json;
+		}
+
+		private function getParam($param){
+			$data=[];
+			if(!empty($param)){
+				foreach ($param as $key=>$value){
+					$data[$key]=$value;
+				}
+			}else{
+				$data="{}";
+			}
+			return json_encode($data);
 		}
 
 		private function getMethod($urlPath) {
