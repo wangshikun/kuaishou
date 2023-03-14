@@ -15,9 +15,6 @@
   "autoload": {
     "psr-4": {
       "ytk\\": "src"
-    },
-    "files": [
-      "src/helper.php"
-    ]
+    }
   }
 }
