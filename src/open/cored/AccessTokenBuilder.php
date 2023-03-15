@@ -11,22 +11,26 @@ class AccessTokenBuilder
 {
 
 
-    public static function build($codeOrShopId, $type = ACCESS_TOKEN_CODE)
+	/**
+	 * 获取授权
+	 * @param $code
+	 * @param $type
+	 * @return AccessToken
+	 */
+    public static function build($code)
     {
         $request = new CreateTokenRequest();
         $param = new CreateTokenParam();
-        if($type == ACCESS_TOKEN_SHOP_ID) {
-            $param->shop_id = $codeOrShopId;
-            $param->grant_type = "authorization_self";
-            $param->code = "";
-        }else if($type == ACCESS_TOKEN_CODE) {
-            $param->grant_type = "authorization_code";
-            $param->code = $codeOrShopId;
-        }
+		$param->grant_type = "code";
+		$param->code = $code;
         $request->setParam($param);
         $resp = $request->execute(null);
         return AccessToken::wrap($resp);
     }
+
+	public function refreshToken(){
+
+	}
 
     public static function refresh($token) {
         $request = new RefreshTokenRequest();

@@ -58,6 +58,50 @@
 			return $json;
 		}
 
+
+		public function requestAuth($request, $accessToken) {
+			$config = $request->getConfig();
+			$urlPath = $request->getUrlPath();
+			$param=$request->getParam();
+			$method = $this->getMethod($urlPath);
+			$param=$this->getParam($param);
+			$appKey = $config->appKey;
+			$appSecret = $config->appSecret;
+			$timestamp = time();
+			$openHost = $config->openRequestUrl;
+			$accessTokenStr =$accessToken;
+			//String requestUrlPattern = "%s/%s?app_key=%s&method=%s&v=2&sign=%s&timestamp=%s&access_token=%s";
+			$requestUrl = $openHost.$urlPath;
+			halt($requestUrl);
+			//发送http请求
+			$httpRequest = new HttpRequest();
+			$httpRequest->url = $requestUrl;
+			$httpRequest->connectTimeout = $config->httpConnectTimeout;
+			$httpRequest->readTimeout = $config->httpReadTimeout;
+			$httpResponse = $this->httpClient->post($httpRequest);
+			$json= json_decode($httpResponse->body, false, 512, JSON_UNESCAPED_UNICODE);
+			if(!property_exists($json, "err_no")) {
+				if($json->code==10000){
+					$json->err_no=0;
+				}else{
+					$json->err_no=1;
+				}
+			}
+			if(!property_exists($json, "message")) {
+				$json->message=$json->sub_msg;
+			}elseif(strpos($json->message,'err_no、message字段已废弃')){
+				$json->message=$json->sub_msg;
+			}elseif(!property_exists($json, "sub_msg")){
+				$json->message=$json->msg;
+			}else{
+				$json->message=$json->sub_msg;
+			}
+			if(empty($json->message)){
+				$json->message=$json->msg;
+			}
+			return $json;
+		}
+
 		private function getParam($param){
 			$data=[];
 			if(!empty($param)){

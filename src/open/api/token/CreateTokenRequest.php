@@ -70,6 +70,7 @@ class CreateTokenRequest
 
     public function execute($accessToken)
     {
-        return KuaiShouOpClient::getInstance()->request($this, $accessToken);
+
+        return KuaiShouOpClient::getInstance()->requestAuth($this, $accessToken);
     }
 }

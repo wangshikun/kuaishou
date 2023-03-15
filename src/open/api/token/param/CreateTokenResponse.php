@@ -1,7 +1,7 @@
 <?php
 namespace ytk\open\api\token\param;
 
-class CreateTokenParam
+class CreateTokenResponse
 {
     //业务参数
     public string $code;
