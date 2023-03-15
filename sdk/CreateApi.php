@@ -6,29 +6,20 @@
 	 */
 	declare (strict_types=1);
 
+	namespace ks_sdk\sdk;
+    include "ClassExample.php";
+	include "ParamExample.php";
 	class CreateApi
 	{
 		protected string $method;//接口地址;
 		protected array $param_array;
 			public function inputCurl(){
-				$string=<<<END
-curl --request GET 'https://openapi.kwaixiaodian.com/open/distribution/investment/activity/item/detail' \
---header 'Content-Type: application/x-www-form-urlencoded' \
---header 'Accept: application/json;charset=UTF-8' \
--d 'method=open.distribution.investment.activity.item.detail' \
--d 'version=1' \
--d 'access_token=your accessToken' \
--d 'appkey=your appKey' \
--d 'signMethod=MD5' \
--d 'sign=your sign' \
--d 'timestamp=1663041047950' \
--d 'param=%7B%22activityId%22%3A1323%2C%22itemId%22%3A%5B21%2C21%5D%7D'
-END;
-				$string=urldecode($string);
-				echo "<hr>";
-				$this->getMethod($string);
-				$this->getParam($string);
+				//打开文档
+				$string=$this->openCurlExample();
+				$this->getMethod($string);//获取接口名称open.xx
+				$this->getParam($string);//获取接口参数
 				$this->createDir();//创建文件夹
+				$this->createParam();//创建参数文件
 				$this->createClass();//创建类文件
 				exit;
 				$method=strpos($string,'method');
@@ -38,6 +29,27 @@ END;
 				exit;
 				exit;
 			}
+
+		/**
+		 * 获取CURL文档
+		 * @return string
+		 */
+			public function openCurlExample(): string
+			{
+				$path=__DIR__;
+				$file_name=$path.DIRECTORY_SEPARATOR."CurlExample.txt";
+				$fp=fopen($file_name,'r');
+				$contents = fread($fp, filesize($file_name));//read file
+				$contents=urldecode($contents);
+				fclose($fp);//close file
+				return $contents;
+			}
+
+
+		/**
+		 * @param $string
+		 * @return void
+		 */
 			public function getMethod($string){
 				$method=stristr($string,'method');
 				$d=stripos($method,"'");
@@ -47,6 +59,11 @@ END;
 				echo "<hr>";
 			}
 
+		/**
+		 * 获取参数
+		 * @param $string
+		 * @return void
+		 */
 			public function getParam($string){
 				$param=stristr($string,'param');
 				$d=strrpos($param,"}");
@@ -63,14 +80,11 @@ END;
 		 * @return void
 		 */
 			public function createClass(){
-				//
-				$string=$this->setPathName();
-				$file_name=$string."Request";
+				$dir_name=$this->setPathName();
+				$file_name=$dir_name."Request";
 				$dir=$this->createDir();
 				$dir_file_name=$dir.DIRECTORY_SEPARATOR.$file_name;
-				var_dump($file_name);
-				echo "<br>";
-				$field_test=$this->classTemplate($file_name);
+				$field_test=$this->classTemplate($dir_name);
 				$myfile = fopen("$dir_file_name.php", "w");
 				fwrite($myfile,$field_test);
 				fclose($myfile);
@@ -82,7 +96,14 @@ END;
 			 * 创建一个参数文件
 			 */
 			public function createParam(){
-
+				$dir_name=$this->setPathName();
+				$file_name=$dir_name."Param";
+				$dir=$this->createDir();
+				$dir_file_name=$dir.DIRECTORY_SEPARATOR.$file_name;
+				$field_test=$this->paramTemplate($dir_name);
+				$my_file = fopen("$dir_file_name.php", "w");
+				fwrite($my_file,$field_test);
+				fclose($my_file);
 			}
 
 		/**
@@ -96,8 +117,11 @@ END;
 				$dir=$path.DIRECTORY_SEPARATOR.'src'.DIRECTORY_SEPARATOR.'open'.DIRECTORY_SEPARATOR.'api'.DIRECTORY_SEPARATOR.$string;
 				if(!is_dir($dir)){
 					mkdir($dir, 0755, true);
-					var_dump($dir);
+					echo "文件夹创建成功";
+				}else{
+					echo "文件夹已创建";
 				}
+				echo "<hr>";
 				return $dir;
 			}
 
@@ -112,23 +136,37 @@ END;
 			}
 
 
-			protected function classTemplate($file_name){
-				$string=<<<END
-					<?php
-					declare (strict_types=1);
-					namespace ytk\open\api\OpenDistributionInvestmentActivityInvalidItemList;
-					use ytk\open\cored\GlobalConfig;
-					Class $file_name
-					{ 
-					  private \$param;
-					  private GlobalConfig \$config;
-					  public function __construct()
-					 {
-					 	\$this->config = GlobalConfig::getGlobalConfig()
-					 }
-					END;
-				return $string;
+		/**
+		 * @param $dir_name
+		 * @return string
+		 */
+			protected function paramTemplate($dir_name): string
+			{
+				$param_name=$dir_name."Param";
+				$data=[
+					'dir_name'=>$dir_name,//命名空间
+					'class_name'=>$param_name,//类名
+					'param'=>$this->param_array,
+				];
 
+				$RequestClass=new \ks_sdk\sdk\ParamExample($data);
+				return $RequestClass->getExample();
+			}
+
+
+			protected function classTemplate($dir_name): string
+			{
+				$class_name=$dir_name."Request";
+				$class_name_param=$dir_name."Param";
+				$path='/'.str_replace('.','/',$this->method);
+				$data=[
+					'dir_name'=>$dir_name,//命名空间
+					'class_name'=>$class_name,//类名
+					'class_name_param'=>$class_name_param,//参数名称
+					'path'=>$path
+				];
+			    $RequestClass=new \ks_sdk\sdk\ClassExample($data);
+				return $RequestClass->getExample();
 			}
 	}
 
