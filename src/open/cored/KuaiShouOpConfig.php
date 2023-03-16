@@ -9,6 +9,7 @@ class KuaiShouOpConfig
 {
     public $appKey;
     public $appSecret;
+	public $signSecret;
     public $httpConnectTimeout = 0;
     public $httpReadTimeout = 0;
     public $openRequestUrl ='';

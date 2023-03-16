@@ -24,6 +24,9 @@ class RefreshTokenRequest
         return $this->param;
     }
 
+	public function getRoute(){
+		return "GET";
+	}
     //通用方法
 
     public function setParam($param)

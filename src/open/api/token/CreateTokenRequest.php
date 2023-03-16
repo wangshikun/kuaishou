@@ -7,7 +7,6 @@ use ytk\open\api\token\param\CreateTokenParam;
 
 class CreateTokenRequest
 {
-
     //通用变量
     private CreateTokenParam $param;
 
@@ -16,7 +15,8 @@ class CreateTokenRequest
     public function __construct()
     {
         $this->config = GlobalConfig::getGlobalConfig();
-        $this->param = new CreateTokenParam();
+		$this->config->openRequestUrl='https://openapi.kwaixiaodian.com';
+		$this->param = new CreateTokenParam();
     }
 
 	/**
@@ -48,6 +48,10 @@ class CreateTokenRequest
 	{
         return "/oauth2/access_token";
     }
+
+	public function getRoute(){
+		return "GET";
+	}
 
 	/**
 	 * 配置文件

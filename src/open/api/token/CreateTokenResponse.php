@@ -40,6 +40,11 @@ class CreateTokenResponse
 		$this->param = $param;
 	}
 
+	public function getRoute(){
+		return "GET";
+	}
+	
+	
 	/**
 	 * 接口地址
 	 * @return string

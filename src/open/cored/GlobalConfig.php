@@ -19,9 +19,10 @@ class GlobalConfig extends KuaiShouOpConfig
         }
         $this->appKey=$this->config['appKey'];
         $this->appSecret=$this->config['appSecret'];
+		$this->signSecret=$this->config['signSecret'];
         $this->httpConnectTimeout=!empty($this->config['httpConnectTimeout'])?$this->config['httpConnectTimeout']:1000;
         $this->httpReadTimeout=!empty($this->config['httpReadTimeout'])?$this->config['httpReadTimeout']:5000;
-        $this->openRequestUrl=!empty($this->config['openRequestUrl'])?$this->config['openRequestUrl']:"https://openapi.kwaixiaodian.com";
+        $this->openRequestUrl=!empty($this->config['openRequestUrl'])?$this->config['openRequestUrl']:'https://open.kwaixiaodian.com';
     }
 
     public static function getGlobalConfig($ks_name='ks'){

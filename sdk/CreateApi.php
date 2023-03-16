@@ -11,23 +11,18 @@
 	include "ParamExample.php";
 	class CreateApi
 	{
-		protected string $method;//接口地址;
+		protected string $method;//接口地址
+		protected string $route;//;
 		protected array $param_array;
 			public function inputCurl(){
 				//打开文档
 				$string=$this->openCurlExample();
+				$this->getRoute($string);//获取接口调用类型
 				$this->getMethod($string);//获取接口名称open.xx
 				$this->getParam($string);//获取接口参数
 				$this->createDir();//创建文件夹
 				$this->createParam();//创建参数文件
 				$this->createClass();//创建类文件
-				exit;
-				$method=strpos($string,'method');
-				$d=strpos($string,'\ -d');
-				var_dump($d);
-				var_dump($method);
-				exit;
-				exit;
 			}
 
 		/**
@@ -59,6 +54,14 @@
 				echo "<hr>";
 			}
 
+			public function getRoute($string){
+				if(mb_stripos($string,'GET')){
+					$this->route="GET";
+				}else{
+					$this->route="POST";
+				}
+			}
+
 		/**
 		 * 获取参数
 		 * @param $string
@@ -66,8 +69,8 @@
 		 */
 			public function getParam($string){
 				$param=stristr($string,'param');
-				$d=strrpos($param,"}");
-				$param=mb_substr($param,0,$d+1);
+				$d=strripos($param,'}');
+				$param=substr($param,0,$d+1);
 				$param=stristr($param,'{');
 				$param_array=json_decode($param,true);
 				$this->param_array=$param_array;
@@ -88,7 +91,6 @@
 				$myfile = fopen("$dir_file_name.php", "w");
 				fwrite($myfile,$field_test);
 				fclose($myfile);
-
 			}
 
 
@@ -163,7 +165,8 @@
 					'dir_name'=>$dir_name,//命名空间
 					'class_name'=>$class_name,//类名
 					'class_name_param'=>$class_name_param,//参数名称
-					'path'=>$path
+					'path'=>$path,
+					'route'=>$this->route
 				];
 			    $RequestClass=new \ks_sdk\sdk\ClassExample($data);
 				return $RequestClass->getExample();
