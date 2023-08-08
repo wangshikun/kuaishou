@@ -1,0 +1,11 @@
+curl --request GET 'https://openapi.kwaixiaodian.com/open/distribution/second/action/edit/apply/investment/activity' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--header 'Accept: application/json;charset=UTF-8' \
+-d 'method=open.distribution.second.action.edit.apply.investment.activity' \
+-d 'version=1' \
+-d 'access_token=your accessToken' \
+-d 'appkey=your appKey' \
+-d 'signMethod=MD5' \
+-d 'sign=your sign' \
+-d 'timestamp=1658148467795' \
+-d 'param=%7B%22itemId%22%3A123344%2C%22activityId%22%3A123545%2C%22preActivityId%22%3A545455%2C%22itemCommissionRate%22%3A100%2C%22investmentPromotionRate%22%3A100%7D'
