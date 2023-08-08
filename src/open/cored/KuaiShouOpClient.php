@@ -1,6 +1,7 @@
 <?php
 	namespace ytk\open\cored;
 
+	use QL\QueryList;
 	use ytk\open\utils\PhpSign;
 	use ytk\open\utils\SignUtil;
 	use ytk\open\cored\http\HttpClient;
@@ -21,13 +22,13 @@
 		 * @throws \Exception
 		 */
 		public function request($request, $access_token) {
-			$signMethod="HMAC_SHA256";
+			$signMethod="MD5";
 			$config = $request->getConfig();
 			$urlPath = $request->getUrlPath();
-			$param=$request->getParam();
+			$param_obj=$request->getParam();
 			$route=$request->getRoute();
 			$method = $this->getMethod($urlPath);
-			$param=$this->getParam($param);
+			$param=$this->getParam($param_obj);
 			$appkey = $config->appKey;
 			$appSecret = $config->appSecret;
 			$signSecret=$config->signSecret;
@@ -46,7 +47,6 @@
 			if($route=="GET"){
 				$json=$this->requestGet($config,$urlPath,$data);
 			}else{
-				unset($data['param']);
 				$json=$this->requestPost($config,$urlPath,$data,$param);
 			}
 			return $json;
@@ -88,16 +88,10 @@
 			$openHost = $config->openRequestUrl;
 			$connectTimeout=$config->httpConnectTimeout;
 			$readTimeout = $config->httpReadTimeout;
-			$url_param=http_build_query($data);
-			$requestUrl=$openHost.$urlPath."?".$url_param;
-			//发送http请求
-			$httpRequest = new HttpRequest();
-			$httpRequest->url = $requestUrl;
-			$httpRequest->body = $param;
-			$httpRequest->connectTimeout = $connectTimeout;
-			$httpRequest->readTimeout = $readTimeout;
-			$httpResponse = $this->httpClient->post($httpRequest);
-			$json= json_decode($httpResponse->body, false, 512, JSON_UNESCAPED_UNICODE);
+			$requestUrl=$openHost.$urlPath;
+			$ql=QueryList::post($requestUrl,$data);
+			$json=$ql->getHtml();
+			$json= json_decode($json, false, 512, JSON_UNESCAPED_UNICODE);
 			return $json;
 		}
 
@@ -131,17 +125,46 @@
 			return $json;
 		}
 
+		public function requestRefreshAuth($request, $accessToken) {
+			$config = $request->getConfig();
+			$urlPath = $request->getUrlPath();
+			$param=$request->getParam();
+			$appKey = $config->appKey;
+			$appSecret = $config->appSecret;
+			$param=[
+				'app_id'=>$appKey,
+				'grant_type'=>$param->grant_type,
+				'refresh_token'=>$param->refresh_token,
+				'app_secret'=>$appSecret
+			];
+			$timestamp = time();
+			$openHost = $config->openRequestUrl;
+			$accessTokenStr =$accessToken;
+			$paramUrl=http_build_query($param);
+			$requestUrl = $openHost.$urlPath.'?'.$paramUrl;
+			//发送http请求
+			$httpRequest = new HttpRequest();
+			$httpRequest->url = $requestUrl;
+			$httpRequest->connectTimeout = $config->httpConnectTimeout;
+			$httpRequest->readTimeout = $config->httpReadTimeout;
+			$httpResponse = $this->httpClient->get($httpRequest);
+			$json= json_decode($httpResponse->body, false, 512, JSON_UNESCAPED_UNICODE);
+			return $json;
+		}
+
 		private function getParam($param){
 			$data=[];
 			if(!empty($param)){
 				foreach ($param as $key=>$value){
-					$data[$key]=$value;
+					if($value!==null){
+						$data[$key]=$value;
+					}
 				}
 			}
 			if(empty($data)){
 				return $data='{}';
 			}else{
-				return json_encode($data);
+				return json_encode($data,JSON_UNESCAPED_UNICODE);
 			}
 
 		}

@@ -36,13 +36,8 @@ class AccessTokenBuilder
         $request = new RefreshTokenRequest();
         $param = new RefreshTokenParam();
         $param->grant_type = "refresh_token";
-        if(is_string($token)){
-            $param->refresh_token = $token;
-        } else {
-            $param->refresh_token = $token->getRefreshToken();
-        }
+		$param->refresh_token = $token;
         $request->setParam($param);
-
         $resp = $request->execute(null);
         return AccessToken::wrap($resp);
     }

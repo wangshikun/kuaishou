@@ -16,6 +16,7 @@ class CreateTokenResponse
 	public function __construct()
 	{
 		$this->config = GlobalConfig::getGlobalConfig();
+		$this->config->openRequestUrl='https://openapi.kwaixiaodian.com';
 		$this->param = new CreateTokenParam();
 	}
 

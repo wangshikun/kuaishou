@@ -16,7 +16,8 @@ class RefreshTokenRequest
     public function __construct()
     {
         $this->config = GlobalConfig::getGlobalConfig();
-        $this->param = new CreateTokenParam();
+		$this->config->openRequestUrl='https://openapi.kwaixiaodian.com';
+		$this->param = new CreateTokenParam();
     }
 
     public function getParam()
@@ -51,6 +52,6 @@ class RefreshTokenRequest
 
     public function execute($accessToken)
     {
-        return KuaiShouOpClient::getInstance()->request($this, $accessToken);
+        return KuaiShouOpClient::getInstance()->requestRefreshAuth($this, $accessToken);
     }
 }

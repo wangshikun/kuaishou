@@ -8,11 +8,13 @@
 		 public  $activityRuleSet;		
 		public  $activityEndTime;		
 		public  $activityType;		
-		public  $activityExclusiveUser;		
+		public  $activityExclusiveUser=[];
 		public  $activityBeginTime;		
 		public  $activityStatus;		
 		public  $activityTitle;		
-		public  $activityExclusiveUserKwaiId;		
-		
+		public  $activityExclusiveUserKwaiId=[];
+		public  $preExclusiveActivitySignType;
+		public  $preActivityUser=[];
+
 		 
     }    

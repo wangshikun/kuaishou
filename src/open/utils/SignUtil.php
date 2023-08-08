@@ -67,7 +67,7 @@
 		public	function checkAndGetParam($paramMap, $paramKey)
 		{
 			if (!isset($paramMap[$paramKey]) || empty($paramMap[$paramKey])) {
-				throw new Exception($paramKey . " not exist");
+				throw new \Exception($paramKey . " not exist");
 			}
 			return $paramMap[$paramKey];
 		}
@@ -94,7 +94,7 @@
 				$sha256HMAC = hash_hmac("sha256", $params, $secret, true);
 				$hash = base64_encode($sha256HMAC);
 				return $hash;
-			} catch (Exception $e) {
+			} catch (\Exception $e) {
 				echo "HMACSHA256SignUtils sign failed, params=" . $params . ", error=" . $e->getMessage();
 			}
 		}

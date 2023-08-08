@@ -10,9 +10,9 @@ class HttpClient
      */
     public function post($httpRequest){
         $data  = $httpRequest->body;
+		halt($data);
         $headerArray =array("Content-type:application/json;charset='utf-8'","Accept:application/json", "from:sdk", "sdk-type:php");
         $curl = curl_init();
-
         curl_setopt($curl, CURLOPT_URL, $httpRequest->url);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST,false);
@@ -54,7 +54,6 @@ class HttpClient
 		curl_setopt($curl, CURLOPT_POST, false);
 		curl_setopt($curl, CURLOPT_FAILONERROR, false);
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
 		curl_setopt($curl,CURLOPT_HTTPHEADER,$headerArray);
 		//设置http超时时间
 		curl_setopt($curl, CURLOPT_TIMEOUT, $httpRequest->readTimeout);
